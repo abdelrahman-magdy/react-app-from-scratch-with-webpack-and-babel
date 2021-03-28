@@ -1,8 +1,19 @@
-import { run } from "./app/app";
-import "./main.scss";
-import { AlertService } from "./app/alert.service";
-import { ComponentService } from "./app/component.service";
-const alertService = new AlertService();
-const componentService = new ComponentService();
-run(alertService, componentService);
-console.log("J");
+import React from "react";
+import ReactDOM from "react-dom";
+import Form from "./components/Form";
+import Search from "./components/Search";
+
+const Index = () => {
+  return (
+        <React.Fragment>
+            <div>
+                Hello React!
+            </div>
+            <h1>abdelrahman</h1>
+            <Form/>
+            <Search/>
+        </React.Fragment>
+    );
+};
+
+ReactDOM.render(<Index />, document.getElementById("index"));

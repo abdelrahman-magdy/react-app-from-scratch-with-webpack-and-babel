@@ -8,42 +8,48 @@ const TerserPlugin = require("terser-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports={
-  mode:"production",
   entry:{
     main:"./src/index.js",
-    vendor: "./src/vendor.js"
   },
   output:{
-    filename:'[name].[contentHash].js',
+    filename:'index.[contentHash].js',
     path: path.resolve(__dirname, "dist"),
   },
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: "./src/template.html"
-    // }),
-    new MiniCssExtractPlugin(),
+    new HtmlWebpackPlugin({
+      template: "./src/index.html",
+      filename: "./index.html"
+    }),
+    // new MiniCssExtractPlugin(),
     new CleanWebpackPlugin()
   ],
-  optimization: {
-    minimizer: [
-      new OptimizeCssAssetsPlugin(),
-      new TerserPlugin(),
-      new HtmlWebpackPlugin({
-        template: "./src/template.html",
-        minify: {
-          removeAttributeQuotes:true,
-          collapseWhitespace: true,
-          removeComments:true
-        }
-      }),
-    ]
-  },
+  // optimization: {
+  //   minimizer: [
+  //     new OptimizeCssAssetsPlugin(),
+  //     // new TerserPlugin(),
+  //     // new HtmlWebpackPlugin({
+  //     //   template: "./src/template.html",
+  //     //   minify: {
+  //     //     removeAttributeQuotes:true,
+  //     //     collapseWhitespace: true,
+  //     //     removeComments:true
+  //     //   }
+  //     // }),
+  //   ]
+  // },
   module: {
     rules: [
       {
-        test: /\.html$/,
-        use:['html-loader']
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
       },
+      // {
+      //   test: /\.html$/,
+      //   use:['html-loader']
+      // },
       {
         test:/\.(svg|png|jpg|gif)$/i,
         use:{
@@ -55,12 +61,25 @@ module.exports={
         }
       },
       {
-        test:/\.scss$/,
+        test:/\.css$/,
         use:[
-          MiniCssExtractPlugin.loader,
-          // "style-loader", //3. Inject styles into DOM
-          "css-loader", //2. Turns css into commonjs
-          "sass-loader" //1. Turns sass into css
+          // {
+          //   loader : MiniCssExtractPlugin.loader
+          // },
+          {
+            loader :"style-loader"
+          }, //3. Inject styles into DOM
+          {
+            loader : "css-loader",
+            options: {
+              importLoaders: 1,
+              localIdentName: "[name]__[local]--[hash:base64:10]",
+              modules: true,
+              sourceMap: true,
+              camelCase: true,
+            } //this to use modules in react
+          } //2. Turns css into commonjs
+          ,"sass-loader" //1. Turns sass into css
         ]
       }
     ]
